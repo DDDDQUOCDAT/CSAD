@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#A799B7"
+    tools:context=".home">
+
+    <!-- Top Row -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_temperature"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/card_tip"
+        app:layout_constraintEnd_toStartOf="@id/card_activities"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FDF4DC">
+
+            <!-- Logo at the Top -->
+            <!-- Replace with your logo drawable -->
+
+            <!-- Temperature and Weather Status at the Bottom -->
+            <ImageView
+                android:id="@+id/temperature_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="67dp"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginTop="8dp"
+                android:contentDescription="Weather Icon"
+                android:scaleType="centerInside"
+                android:src="@drawable/weather_clear_day" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="67dp"
+                android:layout_gravity="center_horizontal|bottom"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="30°C"
+                    android:textColor="#000"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/weather_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cloudy"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_activities"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_margin="16dp"
+
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/card_temperature"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.45">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="#FDF4DC"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/Finished"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:fontFamily="sans-serif-light"
+                android:textAlignment="textEnd"
+                android:textColor="@color/color_one"
+                android:textSize="0sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/NotFinished"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:fontFamily="sans-serif-light"
+                android:textAlignment="textEnd"
+                android:textColor="@color/color_one"
+                android:textSize="0sp"
+                android:textStyle="bold" />
+
+            <org.eazegraph.lib.charts.PieChart
+                android:id="@+id/piechart"
+                android:layout_width="150dp"
+                android:layout_height="120dp"
+                android:layout_weight="1"
+                android:padding="0dp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Tip of the Day Section -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_tip"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_temperature">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FDF4DC"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <!-- ImageView on the Left -->
+            <!-- Replace with your drawable resource -->
+
+
+            <ImageView
+                android:id="@+id/tip_icon"
+                android:layout_width="41dp"
+                android:layout_height="65dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="25dp"
+                android:contentDescription="Tip Icon"
+                android:scaleType="centerInside"
+                android:src="@drawable/bulb" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FDF4DC"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tv_tip_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TIP OF THE DAY"
+                    android:textColor="#000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_tip_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="62dp"
+                    android:text="Exercising improves brain performance. Cardiovascular exercise helps create new brain cells. This enhances brainpower and brain activity."
+                    android:textColor="#666"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Recommended Exercises Section -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_exercises"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_tip">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tv_exercises_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recommended Exercises"
+                android:textColor="#000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_cardio_exercises"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Cardio:\n- Basketball\n- Jogging"
+                android:textColor="#666"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_strength_exercises"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Strength:\n- Push-Ups\n- Sit-Ups"
+                android:textColor="#666"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

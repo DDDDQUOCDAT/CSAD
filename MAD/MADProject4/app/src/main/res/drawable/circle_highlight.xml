@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <size android:width="60dp" android:height="60dp" />
+    <solid android:color="#533A71" /> <!-- Change color to your highlight color -->
+    <corners android:radius="20dp" /> <!-- Ensures the circle shape -->
+</shape>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFF2E3"
+    android:padding="16dp">
+
+    <!-- Top Logo -->
+    <ImageView
+        android:id="@+id/top_logo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="end"
+        android:src="@drawable/logo_black" />
+
+    <FrameLayout
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal">
+
+        <!-- Person Icon -->
+        <ImageView
+            android:id="@+id/person_icon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:src="@drawable/person"
+            android:contentDescription="Profile Icon" />
+    </FrameLayout>
+
+
+    <!-- User Name -->
+    <TextView
+        android:id="@+id/profile_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:text="Guest"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- Edit Profile Button -->
+    <Button
+        android:id="@+id/see_profile_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#000000"
+        android:text="See Profile"
+        android:textColor="#FFFFFF" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="#000000" />
+
+    <!-- Daily Activities Title -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="33dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/icon_daily_activities"
+            android:layout_width="43dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/daily" />
+
+        <TextView
+            android:id="@+id/daily_activities_title"
+            android:layout_width="185dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:text="Daily Activities"
+            android:textColor="#000000"
+            android:textSize="21sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Activity List -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
+
+        <!-- Example Activity Item -->
+        <TextView
+            android:id="@+id/activity_item_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#A1062B"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:text="10 Push Ups"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/activity_item_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#A1062B"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:text="1KM Run"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/activity_item_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#A1062B"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:text="10 Sit Ups"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/activity_item_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#A1062B"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:text="30 Sec Plank"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/activity_item_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#A1062B"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:text="Sit Ups"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="#000000" />
+
+    <!-- Activity History Title -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="33dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/icon_activity_history"
+            android:layout_width="43dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/history" />
+
+        <TextView
+            android:id="@+id/activity_history_title"
+            android:layout_width="279dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Most Recent Activity"
+            android:textColor="#000000"
+            android:textSize="21sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Example Activity History Item -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        android:background="#FFF2E3">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Evening Run"
+            android:textColor="#000000" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Distance: 10KM"
+            android:textColor="#666666" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Avg Pace: 8:57/KM"
+            android:textColor="#666666" />
+
+    </LinearLayout>
+
+</LinearLayout>

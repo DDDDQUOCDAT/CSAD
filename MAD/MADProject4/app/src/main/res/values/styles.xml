@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance.BottomNavigationView.Active" parent="@android:style/TextAppearance">
+        <item name="android:textSize">14sp</item>
+        <item name="android:translationY">-4dp</item> <!-- Moves the text upwards -->
+    </style>
+</resources>

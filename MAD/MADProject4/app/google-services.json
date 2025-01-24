@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "78818215831",
+    "firebase_url": "https://activetrack-69cad-default-rtdb.firebaseio.com",
+    "project_id": "activetrack-69cad",
+    "storage_bucket": "activetrack-69cad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:78818215831:android:92bf991cafc1a7800326d2",
+        "android_client_info": {
+          "package_name": "com.sp.madproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5KrnxTw6s1gtF-kUawPW7RyYqI4PHZJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:78818215831:android:8205faa7d04aa9410326d2",
+        "android_client_info": {
+          "package_name": "com.sp.madproject3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5KrnxTw6s1gtF-kUawPW7RyYqI4PHZJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:78818215831:android:3125527813f97b860326d2",
+        "android_client_info": {
+          "package_name": "com.sp.madproject4"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5KrnxTw6s1gtF-kUawPW7RyYqI4PHZJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

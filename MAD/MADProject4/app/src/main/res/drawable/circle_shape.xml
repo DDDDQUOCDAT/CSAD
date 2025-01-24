@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- Define the ring's thickness and color -->
+    <stroke
+        android:width="5dp"
+        android:color="#FDF4DC" />
+
+    <!-- Make the inside of the circle transparent -->
+    <solid android:color="@android:color/transparent" />
+</shape>
