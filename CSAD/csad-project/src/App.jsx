@@ -24,7 +24,6 @@ function App() {
   });
   return (
     <Router>
-      <div id = "body">
             <Routes>
               <Route
                 path="/"
@@ -35,7 +34,6 @@ function App() {
               <Route path="/home" element={<Home />} />
             </Routes>
             <ToastContainer />
-      </div>
     </Router>
   );
 }

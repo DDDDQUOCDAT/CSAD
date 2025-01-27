@@ -34,6 +34,7 @@ const Signup = () => {
       };
     
   return (
+    <div id="body">
     <div className="form-container">
       <p className="title">Sign Up</p>
       <form className="form" onSubmit={handleSignup}>
@@ -81,6 +82,7 @@ const Signup = () => {
       </div>
       
     </div>
+  </div>
   );
 };
 
