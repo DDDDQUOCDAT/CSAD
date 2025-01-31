@@ -40,7 +40,7 @@ const Login = () => {
           <label htmlFor="password">Password</label>
           <input type="password" name="password" id="password" placeholder="" onChange={(e) => setPassword(e.target.value)}/>
           <div className="forgot">
-            <a rel="noopener noreferrer" href="#">Forgot Password ?</a>
+            <Link to="/forgotPass">Forgot Password?</Link>
           </div>
         </div>
         <button className="sign" type='submit'>Sign in</button>
