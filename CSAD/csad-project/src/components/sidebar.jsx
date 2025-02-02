@@ -14,7 +14,7 @@ function Sidebar() {
 
     return (
         <div className="sidebar">
-          <div className="flex flex-col items-center w-40 h-[100vh] overflow-hidden text-gray-400 bg-gray-900 rounded">
+          <div className="flex flex-col items-center w-40 h-[100vh] overflow-hidden text-gray-400 bg-[#1c2633] rounded">
             <Link to="/Dashboard" className="flex items-center w-full px-3 mt-3">
               <svg className="" xmlns="http://www.w3.org/2000/svg"  fill="currentColor" width={32} height={40}>
                 <path fillRule="evenodd" clipRule="evenodd" d="M 28.2084 19.4796 C 28.2084 25.5528 23.628 30.6327 17.5 31.903 V 18.5006 H 11.5 V 31.903 C 5.37204 30.6327 0.791687 25.5528 0.791687 19.4796 C 0.791687 16.271 1.81389 13.4275 3.30004 10.9889 C 5.36905 10.8355 7.00002 9.10824 7.00002 7.00002 C 7.00002 6.80619 6.98623 6.61558 6.95958 6.42911 C 10.3353 3.08726 13.9352 1.16724 14.44 0.906161 C 14.4819 0.88447 14.5181 0.88447 14.5601 0.906161 C 15.5408 1.41347 28.2084 8.18449 28.2084 19.4796 Z"/>
@@ -57,12 +57,6 @@ function Sidebar() {
                 </Link>
               </div>
               <div className="flex flex-col items-center w-full mt-2 border-t border-gray-700">
-                <Link to="/settings" className="flex items-center w-full h-12 px-3 mt-2 rounded hover:bg-gray-700 hover:text-gray-300">
-                  <svg className="w-6 h-6 stroke-current"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                  </svg>
-                  <span className="ml-2 text-sm font-medium">Settings</span>
-                </Link>
                 <Link to="/messages" className="flex items-center w-full h-12 px-3 mt-2 rounded hover:bg-gray-700 hover:text-gray-300">
                   <svg className="w-6 h-6 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />

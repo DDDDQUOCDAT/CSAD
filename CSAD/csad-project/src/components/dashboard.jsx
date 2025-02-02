@@ -97,7 +97,7 @@ function Dashboard() {
     <div className="h-[100%] rounded">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-gray-900">
+        <h2 className="text-3xl font-bold text-[#cad4df]">
           Welcome, {auth.currentUser?.displayName || "User"}!
         </h2>
       </div>

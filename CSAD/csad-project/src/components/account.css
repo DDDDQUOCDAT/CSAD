@@ -1,5 +1,6 @@
-.title {
-    font-size: 1.5rem;
-    line-height: 2rem;
-    font-weight: 700;
+.account{
+    background-color: #1a2431;
+    color: #e1e9f3;
+    border-radius: 30px;
+    height: 100%;
 }
