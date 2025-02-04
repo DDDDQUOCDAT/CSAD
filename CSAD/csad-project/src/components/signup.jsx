@@ -1,7 +1,8 @@
 import './login.css';
 import React, { useState } from 'react';
-import { auth } from '../firebase/firebase';
-import { createUserWithEmailAndPassword, signOut, updateProfile,GoogleAuthProvider,signInWithPopup } from 'firebase/auth';
+import { auth, db } from '../firebase/firebase';
+import {set, ref} from 'firebase/database';
+import { createUserWithEmailAndPassword, signOut, updateProfile,} from 'firebase/auth';
 import { toast } from "react-toastify";
 import { useNavigate,Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -28,7 +29,10 @@ const Signup = () => {
 
             await updateProfile(user, { displayName: username });
             await signOut(auth);
-
+            await set(ref(db, 'Users/' + user.uid), {
+                username: user.displayName,
+                email: email,
+              });
             console.log('User signed up successfully:', user);
             toast.success("User Registered Successfully!", {
                 position: "top-center",
@@ -45,9 +49,6 @@ const Signup = () => {
             });
         }
     };
-
-
-
 
     return (
         <div id="body">
@@ -101,9 +102,7 @@ const Signup = () => {
                     <button className="sign" type='submit'>Sign Up</button>
                 </form>
                 <Link to="/login"><button style={{ marginTop: "10px" }} className="sign">Back</button></Link>
-                
         </div>
-    
     </div>
     );
 };
