@@ -6,7 +6,7 @@ import Dashboard from "./components/dashboard";
 import Insights from "./components/insights";
 import Events from "./components/events";
 import Rewards from './components/rewards';
-import Messages from './components/messages';
+import Community from './components/community';
 import Account from './components/account';
 import './App.css';
 import Cookies from 'js-cookie';
@@ -57,8 +57,8 @@ function App() {
             <Route path="/insights" element={<ProtectedRoute user={user}><Insights /></ProtectedRoute>} />
             <Route path="/events" element={<ProtectedRoute user={user}><Events /></ProtectedRoute>} />
             <Route path="/rewards" element={<ProtectedRoute user={user}><Rewards /></ProtectedRoute>} />
-            <Route path='messages' element={<ProtectedRoute user={user}><Messages /></ProtectedRoute>} />
-            <Route path='account' element={<ProtectedRoute user={user}><Account /></ProtectedRoute>} />
+            <Route path='/community' element={<ProtectedRoute user={user}><Community /></ProtectedRoute>} />
+            <Route path='/account' element={<ProtectedRoute user={user}><Account /></ProtectedRoute>} />
 
             {/* Fallback Route */}
             <Route path="*" element={<Navigate to={user? "/dashboard" : "/login"} />} />
