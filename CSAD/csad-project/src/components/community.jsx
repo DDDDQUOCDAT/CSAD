@@ -23,23 +23,27 @@ import SimpleBar from "simplebar-react";
 import { serverTimestamp, push } from "firebase/database";
 import "simplebar/dist/simplebar.min.css";
 import "./chat.css";
+import SendIcon from "@mui/icons-material/send";
 
-const ChatComponent = ({ friend }) => {
+
+const ChatComponent = ({ selectedFriend }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const chatThreadRef = useRef(null);
-  const textAreaRef = useRef(null);
   const currentUser = auth.currentUser;
 
   useEffect(() => {
-    if (!currentUser || !friend) return;
+    if (!currentUser || !selectedFriend) return;
 
-    const chatRef = ref(db, `Chat/${currentUser.uid}/friends/${friend}/messages`);
+    const chatRef = ref(db, `Chats/${currentUser.uid}/friends/${selectedFriend}/messages`);
 
-    // Listen for new messages in real-time
     const unsubscribe = onValue(chatRef, (snapshot) => {
       if (snapshot.exists()) {
-        setMessages(Object.values(snapshot.val()).sort((a, b) => a.timestamp - b.timestamp));
+        const messagesArray = Object.entries(snapshot.val()).map(([id, msg]) => ({
+          id,
+          ...msg,
+        }));
+        setMessages(messagesArray.sort((a, b) => a.timestamp - b.timestamp));
       } else {
         setMessages([]);
       }
@@ -47,105 +51,58 @@ const ChatComponent = ({ friend }) => {
     });
 
     return () => unsubscribe();
-  }, [currentUser, friend]);
+  }, [currentUser, selectedFriend]);
 
   const sendMessage = async (event) => {
     event.preventDefault();
-    if (!message.trim() || !currentUser || !friend) return;
+    if (!message.trim() || !currentUser || !selectedFriend) return;
 
     const newMessage = {
       sender: currentUser.uid,
-      text: message.trim(),
+      text: message,
       timestamp: serverTimestamp(),
     };
 
-    // Save message in both users' chat paths
-    const userChatRef = ref(db, `Chat/${currentUser.uid}/friends/${friend}/messages`);
-    const friendChatRef = ref(db, `Chat/${friend}/friends/${currentUser.uid}/messages`);
+    const userChatRef = ref(db, `Chats/${currentUser.uid}/friends/${selectedFriend}/messages`);
+    const friendChatRef = ref(db, `Chats/${selectedFriend}/friends/${currentUser.uid}/messages`);
 
     await push(userChatRef, newMessage);
     await push(friendChatRef, newMessage);
 
-    setMessage(""); // Clear input after sending
-    autoResizeTextarea();
-  };
-
-  const scrollToBottom = () => {
-    setTimeout(() => {
-      if (chatThreadRef.current) {
-        chatThreadRef.current.scrollTop = chatThreadRef.current.scrollHeight;
-      }
-    }, 100);
-  };
-
-  const autoResizeTextarea = () => {
-    if (textAreaRef.current) {
-      textAreaRef.current.style.height = "40px"; // Reset height
-      textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px"; // Expand based on content
-    }
+    setMessage("");
   };
 
   return (
-    <div className="w-[60%] mx-auto p-5 flex flex-col bg-[#0a192f] rounded-lg shadow-lg">
-      {/* Chat Thread with SimpleBar */}
-      <SimpleBar
-        className="h-[450px] bg-[#0a2233] rounded-lg p-3 overflow-y-auto"
-        autoHide={false}
-        scrollableNodeProps={{ ref: chatThreadRef }}
-      >
-        {messages.map((msg, index) => (
-          <div key={index} className={`flex items-end ${msg.sender === currentUser.uid ? "justify-end" : "justify-start"}`}>
-            {msg.sender !== currentUser.uid && (
-              <img
-                src="https://via.placeholder.com/40" 
-                alt="Avatar"
-                className="w-10 h-10 rounded-full mr-2"
-              />
-            )}
-            <div
-              className={`relative max-w-[60%] p-3 rounded-lg text-white text-lg break-words ${
-                msg.sender === currentUser.uid
-                  ? "bg-blue-500 text-right rounded-br-none"
-                  : "bg-green-500 text-left rounded-bl-none"
-              }`}
-            >
+    <div className="w-full h-full mx-auto p-5 flex bg-[#1c2633] flex-col bg-[#0a192f] rounded-lg shadow-lg">
+      <SimpleBar className="h-[500px] p-3 overflow-y-auto custom-scrollbar" autoHide={false} scrollableNodeProps={{ ref: chatThreadRef }}>
+        {messages.map((msg) => (
+          <div key={msg.id} className={`flex items-end mb-3 ${msg.sender === currentUser.uid ? "justify-end" : "justify-start"}`}>
+            {msg.sender !== currentUser.uid && <img src="https://via.placeholder.com/40" alt="Avatar" className="w-10 h-10 rounded-full mr-2" />}
+            <div className={`relative max-w-[60%] px-4 py-2 text-lg text-white rounded-lg break-words ${msg.sender === currentUser.uid ? "bg-blue-500 text-right rounded-br-none" : "bg-green-500 text-left rounded-bl-none"}`}>
               {msg.text}
-              <div
-                className={`absolute top-1/2 w-0 h-0 border-t-8 border-b-8 ${
-                  msg.sender === currentUser.uid
-                    ? "border-l-8 border-l-blue-500 right-[-10px]"
-                    : "border-r-8 border-r-green-500 left-[-10px]"
-                }`}
-              ></div>
             </div>
-            {msg.sender === currentUser.uid && (
-              <img
-                src="https://via.placeholder.com/40"
-                alt="Avatar"
-                className="w-10 h-10 rounded-full ml-2"
-              />
-            )}
+            {msg.sender === currentUser.uid && <img src="https://via.placeholder.com/40" alt="Avatar" className="w-10 h-10 rounded-full ml-2" />}
           </div>
         ))}
       </SimpleBar>
 
-      {/* Chat Input with Send Button */}
-      <form className="relative mt-3 flex items-center gap-2" onSubmit={sendMessage}>
+      <form className="relative mt-3 w-full flex items-end">
         <textarea
-          ref={textAreaRef}
-          className="w-full min-h-[40px] max-h-32 text-lg bg-[#0a2233] text-white border border-[#1a3b5d] rounded-md outline-none resize-none p-3 pr-16"
+          className="w-full h-[60px] text-lg text-white border border-[#1a3b5d] rounded-md outline-none p-3 pr-16 bg-[#0a2233]"
           autoComplete="off"
           autoFocus
           value={message}
           placeholder="Type a message..."
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              sendMessage(e);
+            }
+          }}
         />
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition disabled:opacity-50"
-          disabled={!message.trim()} // Disable button if message is empty
-        >
-          Send
+        <button type="submit" className="absolute bottom-2 right-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition disabled:opacity-50" disabled={!message.trim()} onClick={sendMessage}>
+          <SendIcon />
         </button>
       </form>
     </div>
@@ -156,8 +113,8 @@ const TabPanel = ({ children, value, index }) => (
     component="div"
     role="tabpanel"
     hidden={value !== index}
-    id={`action-tabpanel-${index}`}
-    aria-labelledby={`action-tab-${index}`}
+    id={'action-tabpanel-${index}'}
+    aria-labelledby={'action-tab-${index}'}
     sx={{ height: "95%" }}
   >
     {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
@@ -165,18 +122,20 @@ const TabPanel = ({ children, value, index }) => (
 );
 
 // ✅ FRIENDS LIST COMPONENT (Pass setFriends as a prop)
-const FriendsList = ({ friends, setFriends }) => {
+const FriendsList = ({ friends, setFriends, onSelectFriend }) => {
   const currentUser = auth.currentUser;
 
   useEffect(() => {
     if (!currentUser) return;
 
-    const userChatRef = ref(db, `Chat/${currentUser.uid}/friends`);
+    const userChatRef = ref(db, `Chats/${currentUser.uid}/friends`);
 
-    // ✅ Listen for friend list updates in Realtime Database
     onValue(userChatRef, (snapshot) => {
       if (snapshot.exists()) {
-        setFriends(Object.keys(snapshot.val())); // Convert { friendName: true } to [friendName]
+        console.log(snapshot.val());
+        // Convert object keys to an array and remove duplicates
+        const uniqueFriends = [...new Set(Object.keys(snapshot.val()))];
+        setFriends(uniqueFriends);
       } else {
         setFriends([]);
       }
@@ -184,7 +143,7 @@ const FriendsList = ({ friends, setFriends }) => {
   }, [currentUser, setFriends]);
 
   return (
-    <Box sx={{ width: "20%", height: "100%", display: "flex" }}>
+    <Box sx={{ width: "100%", height: "100%", display: "flex" }}>
       <List
         sx={{
           color: "white",
@@ -199,7 +158,7 @@ const FriendsList = ({ friends, setFriends }) => {
           friends.map((friend, index) => (
             <div key={index}>
               <ListItem disablePadding sx={{ alignItems: "flex-start", flexShrink: 0 }}>
-                <ListItemButton>
+                <ListItemButton onClick={() => onSelectFriend(friend)}>
                   <ListItemText primary={friend} />
                 </ListItemButton>
               </ListItem>
@@ -216,8 +175,10 @@ const FriendsList = ({ friends, setFriends }) => {
   );
 };
 
+
+
 // ✅ ADD FRIEND COMPONENT (Updates friends in the parent)
-const AddFriend = ({ setAddFriend, setFriends }) => {
+const AddFriend = ({ setAddFriend, setFriends, friends }) => {
   const [username, setUsername] = useState("");
   const inputRef = useRef(null);
 
@@ -255,8 +216,10 @@ const AddFriend = ({ setAddFriend, setFriends }) => {
           update(userChatRef, { [username]: true })
             .then(() => {
               toast.success(`${username} added as a friend!`);
-              setUsername(""); // Clear input after success
-              setFriends((prevFriends) => [...prevFriends, username]); // ✅ Update friends list immediately
+              const tempFriends = [...friends, username];
+              console.log([...new Set(tempFriends)])
+              setUsername(""); // Clear input after success 
+              setFriends((prevFriends) => ([...new Set(tempFriends)])); // ✅ Update friends list immediately
             })
             .catch((error) => {
               toast.error(`Error adding friend: ${error.message}`);
@@ -315,11 +278,11 @@ const AddFriend = ({ setAddFriend, setFriends }) => {
 };
 
 export default function Community() {
+  const [selectedFriend, setSelectedFriend] = useState(null);
   const theme = useTheme();
   const [value, setValue] = useState(0);
   const [addFriend, setAddFriend] = useState(false);
   const [friends, setFriends] = useState([]); // ✅ Moved `friends` to Community
-
   const transitionDuration = {
     enter: theme.transitions.duration.enteringScreen,
     exit: theme.transitions.duration.leavingScreen,
@@ -336,7 +299,7 @@ export default function Community() {
         borderBottomRightRadius: 10,
       }}
     >
-      {addFriend && <AddFriend setAddFriend={setAddFriend} setFriends={setFriends} />}
+      {addFriend && <AddFriend setAddFriend={setAddFriend} setFriends={setFriends} friends={friends} />}
 
       <AppBar position="static" sx={{ backgroundColor: "#2a3b4d" }}>
         <Tabs
@@ -353,9 +316,20 @@ export default function Community() {
       </AppBar>
 
       <TabPanel value={value} index={0}>
-        <FriendsList friends={friends} setFriends={setFriends} />
-        <ChatComponent/>
+        {/* ✅ FLEX CONTAINER FOR FRIENDSLIST + CHAT COMPONENT */}
+        <div className="flex w-full h-full">
+          {/* FriendsList takes 25% width */}
+          <div className="w-[25%] border-r border-gray-600">
+            <FriendsList friends={friends} setFriends={setFriends} onSelectFriend={setSelectedFriend}/>
+          </div>
+          
+          {/* ChatComponent takes remaining space */}
+          <div className="flex-grow">
+            <ChatComponent selectedFriend={selectedFriend} /> 
+          </div>
+        </div>
       </TabPanel>
+
       <TabPanel value={value} index={1}>
         Community
       </TabPanel>
