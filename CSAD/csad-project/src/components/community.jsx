@@ -25,17 +25,52 @@ import "simplebar/dist/simplebar.min.css";
 import "./chat.css";
 import SendIcon from "@mui/icons-material/send";
 
-
 const ChatComponent = ({ selectedFriend }) => {
+  const [friendUid, setFriendUid] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const chatThreadRef = useRef(null);
   const currentUser = auth.currentUser;
 
+  const date = new Date();
+  const dd = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const yyyy = date.getFullYear();
+  const todayDate = `date_${dd}-${mm}-${yyyy}`;
+
+  // ✅ Fetch Friend UID from Username
   useEffect(() => {
     if (!currentUser || !selectedFriend) return;
 
-    const chatRef = ref(db, `Chats/${currentUser.uid}/friends/${selectedFriend}/messages`);
+    const usersRef = ref(db, `Users`);
+    
+    get(usersRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const usersData = snapshot.val();
+        const foundUser = Object.entries(usersData).find(
+          ([uid, userData]) => userData.username === selectedFriend
+        );
+
+        if (foundUser) {
+          setFriendUid(foundUser[0]); // Store UID
+        } else {
+          console.warn("Friend UID not found.");
+          setFriendUid(null);
+        }
+      }
+    });
+  }, [selectedFriend, currentUser]);
+
+  // ✅ Fetch Messages Using UID
+  useEffect(() => {
+    if (!currentUser || !friendUid) return;
+
+    const chatId =
+      currentUser.uid < friendUid
+        ? `${currentUser.uid}_${friendUid}`
+        : `${friendUid}_${currentUser.uid}`;
+
+    const chatRef = ref(db, `Chats/${chatId}/messages/${todayDate}`);
 
     const unsubscribe = onValue(chatRef, (snapshot) => {
       if (snapshot.exists()) {
@@ -47,33 +82,52 @@ const ChatComponent = ({ selectedFriend }) => {
       } else {
         setMessages([]);
       }
-      scrollToBottom();
+
+      setTimeout(scrollToBottom, 100);
     });
 
     return () => unsubscribe();
-  }, [currentUser, selectedFriend]);
+  }, [currentUser, friendUid]);
 
+  const scrollToBottom = () => {
+    if (chatThreadRef.current) {
+      chatThreadRef.current.scrollTo({
+        top: chatThreadRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  // ✅ Send Messages Using UID
   const sendMessage = async (event) => {
     event.preventDefault();
-    if (!message.trim() || !currentUser || !selectedFriend) return;
+    if (!message.trim() || !currentUser || !friendUid) return;
+
+    const chatId =
+      currentUser.uid < friendUid
+        ? `${currentUser.uid}_${friendUid}`
+        : `${friendUid}_${currentUser.uid}`;
+
+    const chatRef = ref(db, `Chats/${chatId}/messages/${todayDate}`);
 
     const newMessage = {
       sender: currentUser.uid,
       text: message,
-      timestamp: serverTimestamp(),
+      timestamp: Date.now(),
     };
 
-    const userChatRef = ref(db, `Chats/${currentUser.uid}/friends/${selectedFriend}/messages`);
-    const friendChatRef = ref(db, `Chats/${selectedFriend}/friends/${currentUser.uid}/messages`);
-
-    await push(userChatRef, newMessage);
-    await push(friendChatRef, newMessage);
+    await push(chatRef, newMessage);
 
     setMessage("");
+    setTimeout(scrollToBottom, 100);
   };
 
   return (
-    <div className="w-full h-full mx-auto p-5 flex bg-[#1c2633] flex-col bg-[#0a192f] rounded-lg shadow-lg">
+    <div className="w-full h-full mx-auto p-5 flex flex-col bg-[#0a192f] rounded-lg shadow-lg">
+      <div className="flex items-center justify-between px-4 py-3 bg-[#1c2633] rounded-t-lg shadow-md">
+        <h1 className="text-2xl font-bold text-white">{selectedFriend}</h1>
+      </div>
+
       <SimpleBar className="h-[500px] p-3 overflow-y-auto custom-scrollbar" autoHide={false} scrollableNodeProps={{ ref: chatThreadRef }}>
         {messages.map((msg) => (
           <div key={msg.id} className={`flex items-end mb-3 ${msg.sender === currentUser.uid ? "justify-end" : "justify-start"}`}>
@@ -88,7 +142,7 @@ const ChatComponent = ({ selectedFriend }) => {
 
       <form className="relative mt-3 w-full flex items-end">
         <textarea
-          className="w-full h-[60px] text-lg text-white border border-[#1a3b5d] rounded-md outline-none p-3 pr-16 bg-[#0a2233]"
+          className="w-full h-[60px] text-lg text-white border border-[#1a3b5d] rounded-md outline-none p-3 pr-16 bg-[#0a2233] resize-none"
           autoComplete="off"
           autoFocus
           value={message}
@@ -130,17 +184,19 @@ const FriendsList = ({ friends, setFriends, onSelectFriend }) => {
 
     const userChatRef = ref(db, `Chats/${currentUser.uid}/friends`);
 
+    // Fetch and update state
     onValue(userChatRef, (snapshot) => {
       if (snapshot.exists()) {
-        console.log(snapshot.val());
-        // Convert object keys to an array and remove duplicates
+        console.log("Firebase Data: ", snapshot.val());
         const uniqueFriends = [...new Set(Object.keys(snapshot.val()))];
         setFriends(uniqueFriends);
       } else {
-        setFriends([]);
+        setFriends([]); // Avoid undefined state
       }
+    }, {
+      onlyOnce: false, // Keep listening for real-time updates
     });
-  }, [currentUser, setFriends]);
+  }, [currentUser, setFriends]); // Ensure it re-runs properly
 
   return (
     <Box sx={{ width: "100%", height: "100%", display: "flex" }}>
@@ -155,14 +211,14 @@ const FriendsList = ({ friends, setFriends, onSelectFriend }) => {
         }}
       >
         {friends.length > 0 ? (
-          friends.map((friend, index) => (
-            <div key={index}>
+          friends.map((friend) => (
+            <div key={friend}>
               <ListItem disablePadding sx={{ alignItems: "flex-start", flexShrink: 0 }}>
                 <ListItemButton onClick={() => onSelectFriend(friend)}>
                   <ListItemText primary={friend} />
                 </ListItemButton>
               </ListItem>
-              {index < friends.length - 1 && <Divider sx={{ bgcolor: "white" }} />}
+              <Divider sx={{ bgcolor: "white" }} />
             </div>
           ))
         ) : (
@@ -174,8 +230,6 @@ const FriendsList = ({ friends, setFriends, onSelectFriend }) => {
     </Box>
   );
 };
-
-
 
 // ✅ ADD FRIEND COMPONENT (Updates friends in the parent)
 const AddFriend = ({ setAddFriend, setFriends, friends }) => {
@@ -192,78 +246,74 @@ const AddFriend = ({ setAddFriend, setFriends, friends }) => {
       inputRef.current.focus();
       return;
     }
-
+  
     try {
       const currentUser = auth.currentUser;
       if (!currentUser) {
         toast.error("You must be logged in!");
         return;
       }
-
-      const usernameRef = ref(db, "Users/");
-      const snapshot = await get(usernameRef);
-
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const friendFound = Object.values(data).some((element) => element.username === username);
-
-        if (friendFound) {
-          toast.success("Friend Found!", { position: "top-center" });
-
-          const userChatRef = ref(db, `Chat/${currentUser.uid}/friends`);
-          
-          // ✅ Append friend without overwriting existing ones
-          update(userChatRef, { [username]: true })
-            .then(() => {
-              toast.success(`${username} added as a friend!`);
-              const tempFriends = [...friends, username];
-              console.log([...new Set(tempFriends)])
-              setUsername(""); // Clear input after success 
-              setFriends((prevFriends) => ([...new Set(tempFriends)])); // ✅ Update friends list immediately
-            })
-            .catch((error) => {
-              toast.error(`Error adding friend: ${error.message}`);
-            });
-        } else {
-          toast.error("User not found!", { position: "top-center" });
-          inputRef.current.focus();
-        }
-      } else {
-        toast.error("No users in the database!");
-        inputRef.current.focus();
+  
+      const usersRef = ref(db, "Users");
+      const snapshot = await get(usersRef);
+  
+      if (!snapshot.exists()) {
+        toast.error("No users found in the database!");
+        return;
       }
+  
+      const usersData = snapshot.val();
+      const userKeys = Object.keys(usersData);
+      const friendExists = userKeys.some((key) => usersData[key].username === username);
+  
+      if (!friendExists) {
+        toast.error("User does not exist in the database!");
+        return;
+      }
+  
+      const userChatRef = ref(db, `Chats/${currentUser.uid}/friends`);
+      const friendsSnapshot = await get(userChatRef);
+  
+      if (friendsSnapshot.exists()) {
+        const existingFriends = Object.keys(friendsSnapshot.val());
+  
+        if (existingFriends.includes(username)) {
+          toast.error("Friend is already in your list!");
+          return;
+        }
+      }
+  
+      // ✅ Friend is valid and not already added → Proceed with adding
+      update(userChatRef, { [username]: true })
+        .then(() => {
+          toast.success(`${username} added as a friend!`);
+          setFriends((prevFriends) => [...new Set([...prevFriends, username])]); // Ensure uniqueness
+          setUsername(""); // Clear input
+        })
+        .catch((error) => {
+          toast.error(`Error adding friend: ${error.message}`);
+        });
+  
     } catch (error) {
-      toast.error(error.message);
-      inputRef.current.focus();
+      toast.error(`Error: ${error.message}`);
     }
   };
 
   return (
-    <div
-      style={{
-        zIndex: 100,
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        color: "white",
-        pointerEvents: "none",
-      }}
-    >
+    <div style={{
+      zIndex: 100, position: "absolute",
+      width: "100%", height: "100%",
+      display: "flex", justifyContent: "center",
+      alignItems: "center", color: "white",
+      pointerEvents: "none",
+    }}>
       <div className="form-container" style={{ pointerEvents: "all" }}>
         <p className="title">Add Friend</p>
         <form className="form">
           <div className="input-group">
             <label htmlFor="username">Username</label>
-            <input
-              ref={inputRef}
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
+            <input ref={inputRef} type="text" id="username" value={username}
+              onChange={(e) => setUsername(e.target.value)} />
             <button className="sign" type="button" onClick={handleSearchFriend} style={{ marginTop: "10px" }}>
               Search
             </button>
@@ -282,50 +332,54 @@ export default function Community() {
   const theme = useTheme();
   const [value, setValue] = useState(0);
   const [addFriend, setAddFriend] = useState(false);
-  const [friends, setFriends] = useState([]); // ✅ Moved `friends` to Community
-  const transitionDuration = {
-    enter: theme.transitions.duration.enteringScreen,
-    exit: theme.transitions.duration.leavingScreen,
-  };
+  const [friends, setFriends] = useState([]);
+
+  // ✅ Load friends on mount
+  useEffect(() => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return;
+
+    const userChatRef = ref(db, `Chats/${currentUser.uid}/friends`);
+
+    get(userChatRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const uniqueFriends = [...new Set(Object.keys(snapshot.val()))];
+        setFriends(uniqueFriends);
+      } else {
+        setFriends([]);
+      }
+    }).catch((error) => {
+      console.error("Error fetching friends:", error);
+    });
+  }, []); // Runs only once on mount
 
   return (
-    <Box
-      sx={{
-        bgcolor: "#1c2633",
-        width: "100%",
-        position: "relative",
-        height: "100%",
-        borderBottomLeftRadius: 10,
-        borderBottomRightRadius: 10,
-      }}
-    >
+    <Box sx={{
+      bgcolor: "#1c2633",
+      width: "100%",
+      position: "relative",
+      height: "100%",
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+    }}>
       {addFriend && <AddFriend setAddFriend={setAddFriend} setFriends={setFriends} friends={friends} />}
 
-      <AppBar position="static" sx={{ backgroundColor: "#2a3b4d" }}>
-        <Tabs
-          value={value}
-          onChange={(_, newValue) => setValue(newValue)}
-          indicatorColor="secondary"
-          textColor="inherit"
-          variant="fullWidth"
-          sx={{ backgroundColor: "#1c2633" }}
-        >
+      <AppBar position="static" sx={{ backgroundColor: "#1c2633" }}>
+        <Tabs value={value} onChange={(_, newValue) => setValue(newValue)}
+          indicatorColor="secondary" textColor="inherit"
+          variant="fullWidth" sx={{ backgroundColor: "#1c2633" }}>
           <Tab label="Chats" sx={{ color: value === 0 ? "#4ade80" : "white" }} />
           <Tab label="Community" sx={{ color: value === 1 ? "#facc15" : "white" }} />
         </Tabs>
       </AppBar>
 
       <TabPanel value={value} index={0}>
-        {/* ✅ FLEX CONTAINER FOR FRIENDSLIST + CHAT COMPONENT */}
         <div className="flex w-full h-full">
-          {/* FriendsList takes 25% width */}
           <div className="w-[25%] border-r border-gray-600">
-            <FriendsList friends={friends} setFriends={setFriends} onSelectFriend={setSelectedFriend}/>
+            <FriendsList friends={friends} setFriends={setFriends} onSelectFriend={setSelectedFriend} />
           </div>
-          
-          {/* ChatComponent takes remaining space */}
           <div className="flex-grow">
-            <ChatComponent selectedFriend={selectedFriend} /> 
+            <ChatComponent selectedFriend={selectedFriend} />
           </div>
         </div>
       </TabPanel>
@@ -334,19 +388,16 @@ export default function Community() {
         Community
       </TabPanel>
 
-      <Zoom in timeout={transitionDuration} unmountOnExit>
-        <Fab
-          sx={{
-            position: "absolute",
-            bottom: 16,
-            right: 16,
-            color: "white",
-            bgcolor: green[500],
-            "&:hover": { bgcolor: green[600] },
-          }}
-          aria-label="Add Friend"
-          onClick={() => setAddFriend((prev) => !prev)}
-        >
+      <Zoom in timeout={{ enter: theme.transitions.duration.enteringScreen, exit: theme.transitions.duration.leavingScreen }} unmountOnExit>
+        <Fab sx={{
+          position: "absolute",
+          bottom: 16,
+          right: 16,
+          color: "white",
+          bgcolor: green[500],
+          "&:hover": { bgcolor: green[600] },
+        }} aria-label="Add Friend"
+          onClick={() => setAddFriend((prev) => !prev)}>
           <PersonAddAlt1Icon />
         </Fab>
       </Zoom>
