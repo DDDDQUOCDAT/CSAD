@@ -124,7 +124,7 @@ const ChatComponent = ({ selectedFriend }) => {
 
   return (
     <div className="w-full h-full mx-auto p-5 flex flex-col bg-[#0a192f] rounded-lg shadow-lg">
-      <div className="flex items-center justify-between px-4 py-3 bg-[#1c2633] rounded-t-lg shadow-md">
+      <div className="flex items-center justify-between px-4 py-3 rounded-t-lg shadow-md">
         <h1 className="text-2xl font-bold text-white">{selectedFriend}</h1>
       </div>
 

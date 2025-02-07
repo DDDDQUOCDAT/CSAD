@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { auth, db } from "../firebase/firebase";
 import { ref, onValue } from "firebase/database";
 import Chart from "react-apexcharts";
-import "./dashboard.css";
 
 function Dashboard() {
   const [fitnessData, setFitnessData] = useState({
@@ -21,7 +20,7 @@ function Dashboard() {
     if (!auth.currentUser) return;
 
     const userId = auth.currentUser.uid;
-    const fitnessRef = ref(db, `fitnessData/userId123`);
+    const fitnessRef = ref(db, `fitnessData/${userId}`);
 
     onValue(fitnessRef, (snapshot) => {
       const data = snapshot.val();
