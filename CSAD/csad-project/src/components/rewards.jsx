@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './rewards.css'
+
 const Rewards = () => {
-  // Load points and login data from localStorage
   const [totalPoints, setTotalPoints] = useState(
     parseInt(localStorage.getItem("totalPoints")) || 0
   );
@@ -86,54 +86,74 @@ const Rewards = () => {
   };
 
   return (
-    <div className="rewards-container">
-      <header style={{ backgroundColor: "#1c2633", color: "white" }}>
-        <h1>Rewards!</h1>
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      <header className="text-center py-6 bg-gray-800 shadow-lg">
+        <h1 className="text-4xl font-bold">Rewards!</h1>
       </header>
-      <main>
+
+      <main className="flex flex-col items-center w-full px-4">
+        
         {/* Daily Login Section */}
-        <section className="daily-login" style={{ backgroundColor: "#1c2633", color: "white" }}>
-          <h2>Daily Login Bonus</h2>
+        <section className="w-full max-w-2xl text-center bg-gray-800 p-6 rounded-lg shadow-md ">
+          <h2 className="text-2xl font-semibold">Daily Login Bonus</h2>
           <p>Check in every day to earn <strong>50 points</strong>!</p>
-          <div className="week-tracker">
+          
+          {/* Week Tracker */}
+          <div className="flex justify-center gap-3 ">
             {daysOfWeek.map((day, index) => (
               <span
                 key={index}
-                className={`day-circle ${loggedDays[index] ? "active" : ""}`}
-                style={{
-                  backgroundColor: loggedDays[index] ? "green" : "#ccc",
-                  color: "white",
-                }}
+                className={`w-12 h-12 flex items-center justify-center rounded-full font-bold text-lg ${
+                  loggedDays[index] ? "bg-green-500" : "bg-gray-500"
+                }`}
               >
                 {day}
               </span>
             ))}
           </div>
-          <button onClick={handleDailyLogin}>Check In</button>
-          <p id="loginMessage" style={{ color: "white" }}>{loginMessage}</p>
-          <p><b>Your Total Points:</b> <strong>{totalPoints}</strong> points collected</p>
-          <p className="progress-count">{loggedDays}/7 Achieved</p>
+
+          <button 
+            onClick={handleDailyLogin} 
+            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg mt-2"
+          >
+            Check In
+          </button>
+
+          <p className="mt-2">{loginMessage}</p>
+          <p className="font-bold text-lg mt-2">Your Total Points: <span className="text-yellow-400">{totalPoints}</span></p>
+          <p className="text-lg mt-2">{loggedDays}/7 Achieved</p>
         </section>
 
         {/* Achievements & Badges */}
-        <section className="achievements" style={{ backgroundColor: "#1c2633", color: "white" }}>
-          <h2 style={{ color: "white" }}>Achievements & Badges</h2>
-          <div className="badges-grid">
-            <div className="badge-card"><span className="badge-icon">🥇</span> Beginner's Cardio Medal</div>
-            <div className="badge-card"><span className="badge-icon">🏆</span> Weekly Consistency</div>
-            <div className="badge-card"><span className="badge-icon">🚀</span> Run 10km in a Week</div>
+        <section className="w-full max-w-2xl text-center bg-gray-800 p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-semibold">Achievements & Badges</h2>
+          <div className="flex justify-center gap-6 mt-4">
+            <div className="bg-pink-500 p-4 rounded-full w-32 h-32 flex items-center justify-center text-lg font-bold">
+              🥇 Beginner's Cardio
+            </div>
+            <div className="bg-yellow-500 p-4 rounded-full w-32 h-32 flex items-center justify-center text-lg font-bold">
+              🏆 Weekly Consistency
+            </div>
+            <div className="bg-green-500 p-4 rounded-full w-32 h-32 flex items-center justify-center text-lg font-bold">
+              🚀 Run 10km in a Week
+            </div>
           </div>
         </section>
 
         {/* Redeemable Rewards */}
-        <section className="redeemable-rewards" style={{ backgroundColor: "#1c2633", color: "white" }}>
-          <h2>Redeemable Rewards</h2>
-          <div className="rewards-grid">
+        <section className="w-full max-w-3xl text-center bg-gray-800 p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-semibold">Redeemable Rewards</h2>
+          <div className="grid grid-cols-3 gap-4 mt-4">
             {Object.keys(rewardCosts).map((reward) => (
-              <div className="reward-card" key={reward} style={{backgroundColor: "#1c2633", color: "white"}}>
-                <h4>{reward}</h4>
-                <p>Cost: {rewardCosts[reward]} points</p>
-                <button onClick={() => redeemReward(reward)}>Redeem</button>
+              <div className="bg-gray-700 p-4 rounded-lg shadow-md flex flex-col justify-between h-full items-center" key={reward}>
+                <h4 className="text-lg font-semibold">{reward}</h4>
+                <p className="text-yellow-400">Cost: {rewardCosts[reward]} points</p>
+                <button 
+                  onClick={() => redeemReward(reward)}
+                  className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg mt-auto"
+                >
+                  Redeem
+                </button>
               </div>
             ))}
           </div>

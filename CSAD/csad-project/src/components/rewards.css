@@ -1,415 +1,404 @@
 /* General Styles */
+.rewards-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%; /* Ensures full page height */
+}
 body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #A799B7; 
-    color: #333;
-  }
-  
-  header {
-    background-color: #6C5B7B;
-    color: #fff;
-    padding: 1rem;
-    font-family: 'Poppins';
-    text-align: center;
-  }
-  
-  header h1 {
-    margin: 0;
-    
-      font-size: 3rem; /* Large and eye-catching */
-      font-weight: bold; /* Make it stand out */
-      text-align: center; /* Center the title */
-      color: #ffffff; /* White text */
-      background: linear-gradient(45deg, #6C5B7B, #C06C84, #F67280);
-      padding: 15px 30px; /* Add space inside the title */
-      border-radius: 10px; /* Smooth rounded corners */
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-      display: inline-block; /* Wrap text neatly */
-      text-transform: uppercase; /* Make it bold and strong */
-      letter-spacing: 2px; /* Space out the letters */
-
-  }
-
-
-
-  nav ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-  }
-  
-  nav ul li a {
-    color: #fff;
-    text-decoration: none;
-  }
-  
-  nav ul li a:hover {
-    text-decoration: underline;
-  }
-  
-  main {
-    padding: 2rem;
-  }
-  
-  /* Progress Tracking Section */
-  .progress-tracking {
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 10px;
-    margin-bottom: 2rem;
-    animation: fadeIn 1s ease-in-out;
-  }
-  
-  .milestones {
-    display: flex;
-    justify-content: space-between; /* Pushes items apart */
-    align-items: center; /* Aligns items vertically */
-    gap: 20px; /* Adds spacing between sections */
-   } 
-  
-   .milestone-card {
-    background: #fff;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 250px; /* Ensures all cards have the same width */
-}
-  
-  .progress-bar {
-    background-color: #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-    height: 20px;
-    margin-top: 0.5rem;
-  }
-  
-  .progress {
-    background-color: #C06C84;
-    height: 100%;
-    border-radius: 10px;
-  }
-  
-/* Achievements & Badges Section */
-.achievements {
-  padding: 4rem 2rem;
-  background-color: #f9f9f9;
-  text-align: center;
-  padding: 1rem;
-  border-radius: 10px;
-  margin-bottom: 2rem;
-}
-
-.achievements h2 {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #A799B7; 
   color: #333;
 }
 
+header {
+  background-color: #6C5B7B;
+  color: #fff;
+  padding: 1rem;
+  font-family: 'Poppins';
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  
+    font-size: 3rem; /* Large and eye-catching */
+    font-weight: bold; /* Make it stand out */
+    text-align: center; /* Center the title */
+    color: #ffffff; /* White text */
+    background: linear-gradient(45deg, #6C5B7B, #C06C84, #F67280);
+    padding: 15px 30px; /* Add space inside the title */
+    border-radius: 10px; /* Smooth rounded corners */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    display: inline-block; /* Wrap text neatly */
+    text-transform: uppercase; /* Make it bold and strong */
+    letter-spacing: 2px; /* Space out the letters */
+
+}
+
+
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensures last section is at bottom */
+  align-items: center;
+}
+
+/* Progress Tracking Section */
+.progress-tracking {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.milestones {
+  display: flex;
+  justify-content: space-between; /* Pushes items apart */
+  align-items: center; /* Aligns items vertically */
+  gap: 20px; /* Adds spacing between sections */
+ } 
+
+ .milestone-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Ensures all cards have the same width */
+}
+
+.progress-bar {
+  background-color: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 20px;
+}
+
+.progress {
+  background-color: #C06C84;
+  height: 100%;
+  border-radius: 10px;
+}
+
+/* Achievements & Badges Section */
+.achievements {
+padding: 4rem 2rem;
+background-color: #f9f9f9;
+text-align: center;
+padding: 1rem;
+border-radius: 10px;
+}
+
+.achievements h2 {
+font-size: 2.5rem;
+color: #333;
+}
+
 .badges-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+gap: 2rem;
+width: 100%;
+margin: 0 auto;
 }
 
 
 
 .badge-card {
-    background: #C06C84;
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
-    display: flex;
-    flex-direction: column; /* Stack icon on top of text */
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    overflow: hidden;
+  background: #C06C84;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  flex-direction: column; /* Stack icon on top of text */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  overflow: hidden;
 }
 
 p.dark{
-    color: white;
+  color: white;
 }
 
 .badge-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+transform: translateY(-10px);
+box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
 .badge-icon {
-  font-size: 40px;
-  display: block;
-  margin-bottom: 8px;
-  animation: float 3s ease-in-out infinite;
+font-size: 40px;
+display: block;
+animation: float 3s ease-in-out infinite;
 }
 
 .badge-card p {
-  font-size: 1.2rem;
-  color: #555;
-  margin: 0;
+font-size: 1.2rem;
+color: #555;
+margin: 0;
 }
 
 /* Floating Animation */
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+0%, 100% {
+  transform: translateY(0);
+}
+50% {
+  transform: translateY(-10px);
+}
 }
 
 
-  /* Points System Section */
-  .points-system {
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 10px;
-    margin-bottom: 2rem;
-    animation: fadeIn 2s ease-in-out;
-  }
-  
-  .points-info {
-    margin-top: 1rem;
-  }
-  
-  .points-info ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .points-info ul li {
-    margin: 0.5rem 0;
-  }
-  
-  /* Redeemable Rewards Section */
-  .redeemable-rewards {
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 10px;
-    animation: fadeIn 2.5s ease-in-out;
-  }
-  
-  .rewards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-  
-  .reward-card {
-    background-color: #F4F4F4;
-    padding: 1rem;
-    border-radius: 10px;
-    text-align: center;
-    transition: transform 0.3s ease;
-  }
-  
-  .reward-card:hover {
-    transform: scale(1.05);
-  }
-  
-  .reward-card button {
-    background-color: #6C5B7B;
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .reward-card button:hover {
-    background-color: #C06C84;
-  }
-  
-
- /* Animations */
- @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* Points System Section */
+.points-system {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  animation: fadeIn 2s ease-in-out;
 }
 
-  p{
-    font-family: 'Poppins';
-  }
+
+
+.points-info ul {
+  list-style: none;
+  padding: 0;
+}
+
+
+/* Redeemable Rewards Section */
+.redeemable-rewards {
+  padding-bottom: 20px; /* Space from bottom */
+  text-align: center;
+}
+
+.rewards-grid {
+  display: flex;
+  justify-content: center; /* Centers rewards */
+  gap: 20px; /* Space between rewards */
+}
+
+.reward-card {
+  flex: 1;
+  max-width: 250px; /* Limit width */
+  background-color: #1c2633;
+  color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.reward-card:hover {
+  transform: scale(1.05);
+}
+
+.reward-card button {
+  background-color: #6C5B7B;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reward-card button:hover {
+  background-color: #C06C84;
+}
+
+
+/* Animations */
+@keyframes fadeIn {
+from {
+  opacity: 0;
+}
+to {
+  opacity: 1;
+}
+}
+
+p{
+  font-family: 'Poppins';
+}
 
 
 
-  .container {
-    width: 100%;
-    height: 200px;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .moving-image {
-    width: 100px; /* Adjust based on your image size */
-    height: auto;
-    position: absolute;
-    bottom: 0;
-    left: -100px; /* Start off-screen */
-    animation: move 5s linear infinite;
-  }
+.container {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
 
-    /* Movement Animation */
-    @keyframes move {
-      0% {
-        left: -100px; /* Start off-screen */
-      }
-      100% {
-        left: 100%; /* Move to the right edge of the screen */
-      }
+.moving-image {
+  width: 100px; /* Adjust based on your image size */
+  height: auto;
+  position: absolute;
+  bottom: 0;
+  left: -100px; /* Start off-screen */
+  animation: move 5s linear infinite;
+}
+
+  /* Movement Animation */
+  @keyframes move {
+    0% {
+      left: -100px; /* Start off-screen */
     }
+    100% {
+      left: 100%; /* Move to the right edge of the screen */
+    }
+  }
 
 
 
-    .daily-goals {
-        flex: 1; /* Takes more space on the left */
-    }
-    
-    .daily-goals h2 {
-        font-size: 15px;
-        color: #333;
-        margin-bottom: 5px;
-    }
-    
-    .subtext {
-        font-size: 13px;
-        color: rgba(0, 0, 0, 0.5);
-        margin-bottom: 10px;
-    }
-    
-    .goal-progress {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .progress-count {
-        font-size: 14px;
-        font-weight: bold;
-        color: #C06C84 ;
-        margin-bottom: 10px;
-    }
-    
-    .week-tracker {
-        display: flex;
-        gap: 10px;
-    }
-    
-    .day-circle {
-        width: 35px;
-        height: 35px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        font-weight: bold;
-        color: #555;
-        background: #ddd;
-        transition: background 0.3s ease;
-    }
-    
-    /* When the user logs activity, add this class dynamically */
-    .day-circle.filled {
-        background: #6c63ff;
-        color: white;
-    }
-
-    .day-circle.active {
-        background-color: green !important; /* Highlight checked-in days */
-        color: white;
-      }
-    .milestone-container {
-      display: flex;
-      flex-direction: column; /* Stacks milestone cards */
-      gap: 15px; /* Space between cards */
-      flex: 0.5; /* Takes less space */
-  }
-    
-
-
-  /* Daily Login Section */
-  .daily-login {
-    text-align: center;
-  }
-
-  .week-tracker {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px auto;
-    max-width: 400px;
-  }
-  
-  .day-circle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #ddd;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-  
-  .day-circle.active {
-    background-color: #4CAF50;
-    color: white;
-  }
-  
-  #loginMessage {
-    margin-top: 10px;
-    color: #333333;
-    font-weight: bold;
-  }
-  
-  /* Total Points Display */
-  .total-points {
-    text-align: center;
-  }
-  
-  #totalPoints {
-    font-size: 24px;
-    color: #333333;
-  }
-  
-  /* Progress Tracking Section */
-  .progress-tracking {
-    text-align: center;
-  }
-  
-  .milestones {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
   .daily-goals {
-    margin-bottom: 20px;
+      flex: 1; /* Takes more space on the left */
+  }
+  
+  .daily-goals h2 {
+      font-size: 15px;
+      color: #333;
   }
   
   .subtext {
-    font-size: 14px;
-    color: #777;
+      font-size: 13px;
+      color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .goal-progress {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
   }
   
   .progress-count {
-    font-size: 18px;
-    font-weight: bold;
-    color: #4CAF50;
+      font-size: 14px;
+      font-weight: bold;
+      color: #C06C84 ;
   }
+  
+  .week-tracker {
+      display: flex;
+      gap: 10px;
+  }
+  
+  .day-circle {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-weight: bold;
+      color: #555;
+      background: #ddd;
+      transition: background 0.3s ease;
+  }
+  
+  /* When the user logs activity, add this class dynamically */
+  .day-circle.filled {
+      background: #6c63ff;
+      color: white;
+  }
+
+  .milestone-container {
+    display: flex;
+    flex-direction: column; /* Stacks milestone cards */
+    gap: 15px; /* Space between cards */
+    flex: 0.5; /* Takes less space */
+}
+  
+
+
+/* Daily Login Section */
+.daily-login {
+  text-align: center;
+}
+
+.week-tracker {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.day-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ddd;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.day-circle.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#loginMessage {
+  color: #333333;
+  font-weight: bold;
+}
+
+/* Total Points Display */
+.total-points {
+  text-align: center;
+}
+
+#totalPoints {
+  font-size: 24px;
+  color: #333333;
+}
+
+/* Progress Tracking Section */
+.progress-tracking {
+  text-align: center;
+}
+
+.milestones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+.subtext {
+  font-size: 14px;
+  color: #777;
+}
+
+.progress-count {
+  font-size: 18px;
+  font-weight: bold;
+  color: #4CAF50;
+}

@@ -11,7 +11,7 @@ const firebaseConfig = {
   authDomain: "activetrack-69cad.firebaseapp.com",
   databaseURL: "https://activetrack-69cad-default-rtdb.firebaseio.com",
   projectId: "activetrack-69cad",
-  storageBucket: "activetrack-69cad.firebasestorage.app",
+  storageBucket: "activetrack-69cad.firebasestorage.com",
   messagingSenderId: "78818215831",
   appId: "1:78818215831:web:7ccf679734f9fc900326d2",
   measurementId: "G-YBDJ8RR49K"

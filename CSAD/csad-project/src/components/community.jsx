@@ -131,11 +131,11 @@ const ChatComponent = ({ selectedFriend }) => {
       <SimpleBar className="h-[500px] p-3 overflow-y-auto custom-scrollbar" autoHide={false} scrollableNodeProps={{ ref: chatThreadRef }}>
         {messages.map((msg) => (
           <div key={msg.id} className={`flex items-end mb-3 ${msg.sender === currentUser.uid ? "justify-end" : "justify-start"}`}>
-            {msg.sender !== currentUser.uid && <img src="https://via.placeholder.com/40" alt="Avatar" className="w-10 h-10 rounded-full mr-2" />}
+            {msg.sender !== currentUser.uid }
             <div className={`relative max-w-[60%] px-4 py-2 text-lg text-white rounded-lg break-words ${msg.sender === currentUser.uid ? "bg-blue-500 text-right rounded-br-none" : "bg-green-500 text-left rounded-bl-none"}`}>
               {msg.text}
             </div>
-            {msg.sender === currentUser.uid && <img src="https://via.placeholder.com/40" alt="Avatar" className="w-10 h-10 rounded-full ml-2" />}
+            {msg.sender === currentUser.uid }
           </div>
         ))}
       </SimpleBar>
@@ -253,7 +253,10 @@ const AddFriend = ({ setAddFriend, setFriends, friends }) => {
         toast.error("You must be logged in!");
         return;
       }
-  
+      if(currentUser.displayName === username){
+        toast.error("You cannot add yourself as a friend!");
+        return;
+      }
       const usersRef = ref(db, "Users");
       const snapshot = await get(usersRef);
   

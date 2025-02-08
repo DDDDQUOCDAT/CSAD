@@ -5,95 +5,154 @@ import Chart from "react-apexcharts";
 
 function Dashboard() {
   const [fitnessData, setFitnessData] = useState({
-    calories: 0,
-    steps: 0,
-    heartRate: 0,
-    workoutTime: 0,
+    totalCalories: 0,
+    totalDistance: 0,
+    totalTime: 0,
+    totalActivities: 0,
     dailyCalories: [],
-    dailyWorkoutTime: [],
+    workoutTime: [],
     protein: 0,
     carbs: 0,
     fats: 0,
+    activityHistory: [],
+    activityTypeDistribution: {},
   });
 
   useEffect(() => {
     if (!auth.currentUser) return;
 
     const userId = auth.currentUser.uid;
-    const fitnessRef = ref(db, `fitnessData/${userId}`);
+    const userRef = ref(db, `Users/${userId}`);
 
-    onValue(fitnessRef, (snapshot) => {
+    onValue(userRef, (snapshot) => {
       const data = snapshot.val();
       console.log("Fetched Data:", data);
       if (data) {
+        const activityHistory = data.activityHistory || {};
+        const dates = Object.keys(activityHistory);
+
+        const activities = dates.length > 0 ? activityHistory[dates[dates.length - 1]] : {};
+        const dailyCalories = Object.values(activities).map(
+          (act) => parseFloat((act["Calories Burnt"] || 0).toFixed(3))
+        );
+        const workoutTime = Object.values(activities).map((act) => act["Time"] || "00:00:00").map((time) => convertTimeToMinutes(time));
+
+        // Count different activity types for distribution chart
+        const activityTypeCount = {};
+        Object.values(activities).forEach((act) => {
+          const type = act["Activity Type"] || "Other";
+          activityTypeCount[type] = (activityTypeCount[type] || 0) + 1;
+        });
+
+        const foodHistory = dates.length > 0 ? data.foodList?.[dates[dates.length - 1]]?.totalNutrition || {} : {};
+
         setFitnessData({
-          calories: data.calories || 0,
-          steps: data.steps || 0,
-          heartRate: data.heartRate || 0,
-          workoutTime: data.workoutTime || 0,
-          dailyCalories: data.dailyCalories || [0, 0, 0, 0, 0, 0, 0],
-          dailyWorkoutTime: data.dailyWorkoutTime || [0, 0, 0, 0, 0, 0, 0],
-          protein: data.protein || 0,
-          carbs: data.carbs || 0,
-          fats: data.fats || 0,
+          totalCalories: data.totalCalories || 0,
+          totalDistance: data.totalDistance || 0,
+          totalTime: data.totalTime || 0,
+          totalActivities: data.totalActivities || 0,
+          dailyCalories: dailyCalories,
+          workoutTime: workoutTime,
+          protein: foodHistory.Protein || 0,
+          carbs: foodHistory.Carbs || 0,
+          fats: foodHistory.Fat || 0,
+          activityHistory: activities,
+          activityTypeDistribution: activityTypeCount,
         });
       }
     });
   }, [auth.currentUser?.uid]);
 
-  // Workout Trends Chart (Last 7 Days)
-  const workoutChart = {
-    options: {
-      chart: { type: "area", height: 250, toolbar: { show: false } },
-      colors: ["#06b6d4", "#f97316"],
-      stroke: { curve: "smooth" },
-      xaxis: { categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] },
-    },
-    series: [
-      { name: "Calories Burned", data: fitnessData.dailyCalories },
-      { name: "Workout Time (mins)", data: fitnessData.dailyWorkoutTime },
-    ],
+  const convertTimeToMinutes = (timeString) => {
+    const [hh, mm, ss] = timeString.split(":").map(Number);
+    return hh * 60 + mm + ss / 60;
   };
 
-  // Radial Progress Chart (Fitness Goal Completion)
-  const radialChart = {
-    options: {
-      chart: { type: "radialBar" },
-      colors: ["#4ade80", "#facc15", "#f43f5e"], // Colors for filled portions
-      plotOptions: {
-        radialBar: {
-          track: {
-            background: "", // Change this to the desired background color
-          },
-          dataLabels: {
-            show: true,
-            name: { fontSize: '14px' },
-            value: { fontSize: '16px' }
-          }
-        }
-      },
-      labels: ["Calories", "Steps", "Workout"],
+  // 📊 Calories & Workout Time (Stacked Line Chart)
+const workoutChart = {
+  options: {
+    chart: { type: "line", height: 300, toolbar: { show: false } },
+    colors: ["#06b6d4", "#f97316"],
+    stroke: { curve: "smooth", width: 3, dashArray: 0, connectNulls: true },  
+    fill: { type: "solid" },  
+    markers: { size: 5 },
+    xaxis: {
+      position: "bottom",
+      categories: fitnessData.dailyCalories.length > 0 
+        ? Array.from({ length: fitnessData.dailyCalories.length }, (_, i) => `Day ${i + 1}`)
+        : [],
+      labels: { rotate: -45 },
     },
-    series: [
-      (fitnessData.calories / 2000) * 100, // % of daily goal (2000 kcal)
-      (fitnessData.steps / 10000) * 100, // % of daily goal (10k steps)
-      (fitnessData.workoutTime / 60) * 100, // % of daily goal (1 hour)
+    yaxis: [
+      {
+        title: { text: "Calories Burned", style: { color: "#ffffff" } }, // ✅ Set title to white
+        labels: { style: { colors: "#06b6d4" } },
+        forceNiceScale: true,
+        tickAmount: 6,
+        decimalsInFloat: 0,
+      },
+      {
+        opposite: true,
+        title: { text: "Workout Time (mins)", style: { color: "#ffffff" } }, // ✅ Set title to white
+        labels: { style: { colors: "#f97316" } },
+        forceNiceScale: true,
+        tickAmount: 6,
+        decimalsInFloat: 0,
+      },
     ],
+    tooltip: { shared: true, intersect: false },
+    legend: { labels: { colors: "#ffffff" } },
+  },
+  series: [
+    {
+      name: "Calories Burned",
+      type: "line",
+      data: fitnessData.dailyCalories.map(cal => cal),
+    },
+    {
+      name: "Workout Time (mins)",
+      type: "line",
+      data: fitnessData.workoutTime.map(time => time),
+    },
+  ],
 };
+  
 
-
-  // Pie Chart (Macronutrient Breakdown)
+  // 🥗 Macronutrient Breakdown Pie Chart
   const macroChart = {
     options: {
-      chart: { type: "pie" },
+      chart: { 
+        type: "pie",
+        background: "transparent" // ✅ Match the dark background
+      },
+      plotOptions: {
+        pie: {
+          expandOnClick: true, // ✅ Prevent slice expansion on click
+        },
+      },
+      stroke: { show: false }, // ✅ Remove white gaps
       labels: ["Protein", "Carbs", "Fats"],
       colors: ["#34d399", "#60a5fa", "#f87171"],
+      legend: { labels: { colors: "#ffffff" } },
     },
     series: [fitnessData.protein, fitnessData.carbs, fitnessData.fats],
   };
+  
+
+  // 🏋️ Activity Type Distribution (Donut Chart)
+  const activityTypeChart = {
+    options: {
+      chart: { type: "donut", background: "transparent" },
+      labels: Object.keys(fitnessData.activityTypeDistribution),
+      colors: ["#f97316", "#06b6d4", "#f43f5e", "#34d399"],
+      stroke: { show: false },
+      legend: { labels: { colors: "#ffffff" } },
+    },
+    series: Object.values(fitnessData.activityTypeDistribution),
+  };
 
   return (
-    <div className="h-[100%] rounded">
+    <div className="p-6 bg-[#1c2633] text-white h-[100%]">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-[#cad4df]">
@@ -101,33 +160,33 @@ function Dashboard() {
         </h2>
       </div>
 
-      {/* Fitness Overview Cards */}
+      {/* Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        <FitnessCard title="Calories Burned" value={`${fitnessData.calories} kcal`} />
-        <FitnessCard title="Steps Taken" value={`${fitnessData.steps} steps`} />
-        <FitnessCard title="Heart Rate" value={`${fitnessData.heartRate} BPM`} />
-        <FitnessCard title="Workout Time" value={`${fitnessData.workoutTime} mins`} />
+        <FitnessCard title="Total Calories Burned" value={`${fitnessData.totalCalories.toFixed(2)} kcal`} />
+        <FitnessCard title="Total Distance Covered" value={`${fitnessData.totalDistance.toFixed(2)} KM`} />
+        <FitnessCard title="Total Workout Time" value={`${fitnessData.totalTime} mins`} />
+        <FitnessCard title="Total Activities" value={`${fitnessData.totalActivities}`} />
       </div>
 
-      {/* Charts Layout */}
+      {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        {/* Macronutrient Breakdown Chart (Left) */}
-        <div className="bg-[#FDF4DC] p-6 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-4">Macronutrient Breakdown (Protein, Carbs, Fats)</h3>
+        {/* Macronutrient Breakdown */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow">
+          <h3 className="text-xl font-semibold mb-4">Macronutrient Breakdown</h3>
           <Chart options={macroChart.options} series={macroChart.series} type="pie" height={250} />
         </div>
 
-        {/* Radial Chart (Right) */}
-        <div className="bg-[#FDF4DC] p-6 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-4">Fitness Goal Progress</h3>
-          <Chart options={radialChart.options} series={radialChart.series} type="radialBar" height={250} />
+        {/* Activity Type Distribution */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow">
+          <h3 className="text-xl font-semibold mb-4">Activity Type Distribution</h3>
+          <Chart options={activityTypeChart.options} series={activityTypeChart.series} type="donut" height={250} />
         </div>
       </div>
 
-      {/* Workout Trends Chart (Below) */}
-      <div className="mt-8 bg-[#FDF4DC] p-6 rounded-lg shadow">
-        <h3 className="text-xl font-semibold mb-4">Workout Trends (Last 7 Days)</h3>
-        <Chart options={workoutChart.options} series={workoutChart.series} type="area" height={250} />
+      {/* Workout Trends Chart (Stacked Line Chart) */}
+      <div className="mt-8 bg-gray-800 p-6 rounded-lg shadow">
+        <h3 className="text-xl font-semibold mb-4">Calories Burned & Workout Time</h3>
+        <Chart options={workoutChart.options} series={workoutChart.series} type="line" height={250} />
       </div>
     </div>
   );
@@ -135,8 +194,8 @@ function Dashboard() {
 
 // Fitness Card Component
 const FitnessCard = ({ title, value }) => (
-  <div className="bg-[#FDF4DC] p-4 rounded-lg shadow flex flex-col items-center font-sans">
-    <p className="text-gray-500">{title}</p>
+  <div className="bg-gray-800 p-4 rounded-lg shadow flex flex-col items-center">
+    <p className="text-gray-400">{title}</p>
     <p className="text-2xl font-semibold">{value}</p>
   </div>
 );
