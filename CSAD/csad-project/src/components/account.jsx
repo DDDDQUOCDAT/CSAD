@@ -17,7 +17,6 @@ function Account() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ✅ Fetch the latest username from Firebase Realtime Database
   useEffect(() => {
     if (user) {
       const userRef = ref(db, `Users/${user.uid}/username`);
@@ -33,7 +32,6 @@ function Account() {
     }
   }, [user]);
 
-  // ✅ Re-authenticate the user before updating password
   async function reauthenticateUser() {
     if (!currentPassword) {
       toast.error("Please enter your current password before updating.");
@@ -51,7 +49,6 @@ function Account() {
     }
   }
 
-  // ✅ Handle Updating Display Name in Firebase Auth & Realtime Database
   async function handleUpdateDisplayName() {
     if (!displayName.trim()) {
       toast.error("Display name cannot be empty.");
@@ -71,7 +68,6 @@ function Account() {
     }
   }
 
-  // ✅ Handle Updating Password (With Re-authentication)
   async function handleUpdatePassword() {
     if (!newPassword) {
       toast.error("Enter a new password.");
@@ -85,7 +81,7 @@ function Account() {
       setLoading(true);
       await updatePassword(user, newPassword);
       setNewPassword("");
-      setCurrentPassword(""); // ✅ Clear password fields after updating
+      setCurrentPassword("");
       toast.success("Password updated successfully!");
     } catch (error) {
       toast.error(error.message);
@@ -94,7 +90,6 @@ function Account() {
     }
   }
 
-  // ✅ Handle Logout
   async function handleLogout() {
     try {
       await signOut(auth);
@@ -107,7 +102,6 @@ function Account() {
   return (
     <div className="flex flex-col items-center p-8 h-[100%] bg-[#1c2633] text-white w-[100%]">
       <div className="bg-[#1e2939] p-6 rounded-lg shadow-lg w-full max-w-md text-center">
-        {/* Profile Picture */}
         <div className="flex justify-center">
           <div className="w-20 h-20 rounded-full bg-gray-500 flex items-center justify-center">
             <svg
@@ -131,7 +125,6 @@ function Account() {
         <p className="text-gray-400">{user?.email}</p>
       </div>
 
-      {/* Update Display Name */}
       <div className="bg-[#1e2939] p-6 rounded-lg shadow-lg w-full max-w-md mt-6">
         <label className="text-gray-400 text-sm font-semibold">Display Name</label>
         <input
@@ -149,7 +142,6 @@ function Account() {
         </button>
       </div>
 
-      {/* Update Password (With Re-authentication) */}
       <div className="bg-[#1e2939] p-6 rounded-lg shadow-lg w-full max-w-md mt-6">
         <label className="text-gray-400 text-sm font-semibold">New Password</label>
         <input
@@ -178,7 +170,6 @@ function Account() {
         </button>
       </div>
 
-      {/* Logout Button */}
       <div className="w-half max-w-md mt-6">
         <button
           onClick={handleLogout}

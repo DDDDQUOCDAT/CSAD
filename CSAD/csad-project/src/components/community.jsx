@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { db, auth } from "../firebase/firebase";
-import { ref, get, update, onValue } from "firebase/database";
+import { ref, get, update, onValue, remove } from "firebase/database";
 import { useTheme } from "@mui/material/styles";
 import {
   AppBar,
@@ -15,6 +15,7 @@ import {
   ListItemButton,
   Box,
   Divider,
+  IconButton
 } from "@mui/material";
 import { green } from "@mui/material/colors";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -24,6 +25,130 @@ import { serverTimestamp, push } from "firebase/database";
 import "simplebar/dist/simplebar.min.css";
 import "./chat.css";
 import SendIcon from "@mui/icons-material/send";
+import CloseIcon from '@mui/icons-material/Close';
+import DoneIcon from '@mui/icons-material/Done';
+import PersonIcon from "@mui/icons-material/Person";
+const Request = ({ setFriends }) => {
+  const [requests, setRequests] = useState([]);
+  const currentUser = auth.currentUser;
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const requestRef = ref(db, `Users/${currentUser.uid}/friendRequests`);
+    get(requestRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        setRequests(Object.keys(snapshot.val()));
+      } else {
+        setRequests([]);
+      }
+    });
+  }, [currentUser]);
+
+  const acceptRequest = async (username) => {
+    if (!currentUser) return;
+
+    try {
+      const usersRef = ref(db, "Users");
+      const usersSnapshot = await get(usersRef);
+      if (!usersSnapshot.exists()) return toast.error("User not found!");
+
+      const usersData = usersSnapshot.val();
+      const friendEntry = Object.entries(usersData).find(
+        ([uid, userData]) => userData.username === username
+      );
+
+      if (!friendEntry) return toast.error("User no longer exists!");
+      const friendUid = friendEntry[0];
+
+      const currentUserFriendsRef = ref(db, `Chats/${currentUser.uid}/friends`);
+      const friendFriendsRef = ref(db, `Chats/${friendUid}/friends`);
+
+      await update(currentUserFriendsRef, { [username]: true });
+      await update(friendFriendsRef, { [currentUser.displayName]: true });
+
+      const requestRef = ref(db, `Users/${currentUser.uid}/friendRequests/${username}`);
+      await remove(requestRef);
+
+      setRequests((prev) => prev.filter((req) => req !== username));
+      setFriends((prev) => [...new Set([...prev, username])]);
+
+      toast.success(`${username} added to your friends list!`);
+    } catch (error) {
+      console.error("Error accepting friend request:", error);
+      toast.error("Failed to accept friend request.");
+    }
+  };
+
+  const declineRequest = async (username) => {
+    if (!currentUser) return;
+
+    try {
+      const requestRef = ref(db, `Users/${currentUser.uid}/friendRequests/${username}`);
+      await remove(requestRef);
+
+      setRequests((prev) => prev.filter((req) => req !== username));
+
+      toast.info(`You declined ${username}'s friend request.`);
+    } catch (error) {
+      console.error("Error declining friend request:", error);
+      toast.error("Failed to decline friend request.");
+    }
+  };
+
+  return (
+    <Box sx={{ width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
+      <Typography sx={{ color: "white", textAlign: "center", p: 2, fontSize: "18px" }}>
+        Friend Requests
+      </Typography>
+      <Divider sx={{ bgcolor: "white" }} />
+
+      <List sx={{ color: "white", width: "100%", height: "100%", overflowY: "auto" }}>
+        {requests.length > 0 ? (
+          requests.map((username) => (
+            <div key={username}>
+              <ListItem
+                disablePadding
+                sx={{
+                  alignItems: "center",
+                  flexShrink: 0,
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <ListItemButton>
+                  <PersonIcon sx={{ color: "white", marginRight: 2 }} />
+                  <ListItemText primary={username} />
+                </ListItemButton>
+
+                <IconButton
+                  onClick={() => acceptRequest(username)}
+                  sx={{ color: "green", marginRight: 1 }}
+                >
+                  <DoneIcon />
+                </IconButton>
+
+                {/* Decline Request */}
+                <IconButton
+                  onClick={() => declineRequest(username)}
+                  sx={{ color: "red", marginRight: 2 }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </ListItem>
+              <Divider sx={{ bgcolor: "white" }} />
+            </div>
+          ))
+        ) : (
+          <Typography sx={{ color: "white", textAlign: "center", p: 2 }}>
+            No pending requests
+          </Typography>
+        )}
+      </List>
+    </Box>
+  );
+};
+
 
 const ChatComponent = ({ selectedFriend }) => {
   const [friendUid, setFriendUid] = useState(null);
@@ -38,7 +163,6 @@ const ChatComponent = ({ selectedFriend }) => {
   const yyyy = date.getFullYear();
   const todayDate = `date_${dd}-${mm}-${yyyy}`;
 
-  // ✅ Fetch Friend UID from Username
   useEffect(() => {
     if (!currentUser || !selectedFriend) return;
 
@@ -52,7 +176,7 @@ const ChatComponent = ({ selectedFriend }) => {
         );
 
         if (foundUser) {
-          setFriendUid(foundUser[0]); // Store UID
+          setFriendUid(foundUser[0]); 
         } else {
           console.warn("Friend UID not found.");
           setFriendUid(null);
@@ -61,7 +185,6 @@ const ChatComponent = ({ selectedFriend }) => {
     });
   }, [selectedFriend, currentUser]);
 
-  // ✅ Fetch Messages Using UID
   useEffect(() => {
     if (!currentUser || !friendUid) return;
 
@@ -98,7 +221,6 @@ const ChatComponent = ({ selectedFriend }) => {
     }
   };
 
-  // ✅ Send Messages Using UID
   const sendMessage = async (event) => {
     event.preventDefault();
     if (!message.trim() || !currentUser || !friendUid) return;
@@ -175,8 +297,9 @@ const TabPanel = ({ children, value, index }) => (
   </Typography>
 );
 
-// ✅ FRIENDS LIST COMPONENT (Pass setFriends as a prop)
 const FriendsList = ({ friends, setFriends, onSelectFriend }) => {
+  const [friendNames, setFriendNames] = useState({});
+  const [friendUids, setFriendUids] = useState({});
   const currentUser = auth.currentUser;
 
   useEffect(() => {
@@ -184,19 +307,83 @@ const FriendsList = ({ friends, setFriends, onSelectFriend }) => {
 
     const userChatRef = ref(db, `Chats/${currentUser.uid}/friends`);
 
-    // Fetch and update state
-    onValue(userChatRef, (snapshot) => {
-      if (snapshot.exists()) {
-        console.log("Firebase Data: ", snapshot.val());
-        const uniqueFriends = [...new Set(Object.keys(snapshot.val()))];
-        setFriends(uniqueFriends);
-      } else {
-        setFriends([]); // Avoid undefined state
+    const fetchFriends = async () => {
+      try {
+        const snapshot = await get(userChatRef);
+        if (snapshot.exists()) {
+          const friendDisplayNames = Object.keys(snapshot.val());
+
+          const uids = {};
+          await Promise.all(
+            friendDisplayNames.map(async (displayName) => {
+              try {
+                const usersRef = ref(db, `Users`);
+                const usersSnapshot = await get(usersRef);
+                if (usersSnapshot.exists()) {
+                  const usersData = usersSnapshot.val();
+                  const foundUser = Object.entries(usersData).find(
+                    ([uid, userData]) => userData.username === displayName
+                  );
+                  if (foundUser) {
+                    uids[displayName] = foundUser[0];
+                  }
+                }
+              } catch (error) {
+                console.error(`Error fetching UID for ${displayName}:`, error);
+              }
+            })
+          );
+
+          setFriendUids(uids); 
+          setFriends(friendDisplayNames);
+          setFriendNames(friendDisplayNames.reduce((acc, name) => ({ ...acc, [name]: name }), {}));
+        } else {
+          setFriends([]);
+        }
+      } catch (error) {
+        console.error("Error fetching friends:", error);
       }
-    }, {
-      onlyOnce: false, // Keep listening for real-time updates
-    });
-  }, [currentUser, setFriends]); // Ensure it re-runs properly
+    };
+
+    fetchFriends();
+  }, [currentUser, setFriends]);
+
+  const removeFriend = async (displayName) => {
+    if (!currentUser || !friendUids[displayName]) {
+      toast.error("Error: Unable to find user.", {position: "top-center"});
+      return;
+    }
+  
+    const friendUid = friendUids[displayName]; 
+  
+    const userFriendsRef = ref(db, `Chats/${currentUser.uid}/friends/${displayName}`);
+    const friendFriendsRef = ref(db, `Chats/${friendUid}/friends/${currentUser.displayName}`);
+  
+    const chatId =
+      currentUser.uid < friendUid
+        ? `${currentUser.uid}_${friendUid}`
+        : `${friendUid}_${currentUser.uid}`;
+    const chatRef = ref(db, `Chats/${chatId}`);
+  
+    try {
+      await remove(userFriendsRef);
+  
+      await remove(friendFriendsRef).catch((err) =>
+        console.warn("Friend already removed:", err)
+      );
+  
+      await remove(chatRef).catch((err) =>
+        console.warn("No chat history to remove:", err)
+      );
+  
+      setFriends((prev) => prev.filter((name) => name !== displayName));
+  
+      toast.success(`${displayName} has been removed.`, {position: "top-center"});
+    } catch (error) {
+      console.error("Error removing friend:", error);
+      toast.error("Failed to remove friend.", {position: "top-center"});
+    }
+  };
 
   return (
     <Box sx={{ width: "100%", height: "100%", display: "flex" }}>
@@ -211,12 +398,21 @@ const FriendsList = ({ friends, setFriends, onSelectFriend }) => {
         }}
       >
         {friends.length > 0 ? (
-          friends.map((friend) => (
-            <div key={friend}>
+          friends.map((displayName) => (
+            <div key={displayName}>
               <ListItem disablePadding sx={{ alignItems: "flex-start", flexShrink: 0 }}>
-                <ListItemButton onClick={() => onSelectFriend(friend)}>
-                  <ListItemText primary={friend} />
+                <ListItemButton onClick={() => onSelectFriend(displayName)}>
+                  <ListItemText primary={displayName} />
                 </ListItemButton>
+
+                {/* ✅ CloseIcon to Remove Friend */}
+                <IconButton
+                  edge="end"
+                  onClick={() => removeFriend(displayName)}
+                  sx={{ color: "red", marginRight: "10px" }}
+                >
+                  <CloseIcon />
+                </IconButton>
               </ListItem>
               <Divider sx={{ bgcolor: "white" }} />
             </div>
@@ -231,7 +427,7 @@ const FriendsList = ({ friends, setFriends, onSelectFriend }) => {
   );
 };
 
-// ✅ ADD FRIEND COMPONENT (Updates friends in the parent)
+
 const AddFriend = ({ setAddFriend, setFriends, friends }) => {
   const [username, setUsername] = useState("");
   const inputRef = useRef(null);
@@ -242,7 +438,7 @@ const AddFriend = ({ setAddFriend, setFriends, friends }) => {
 
   const handleSearchFriend = async () => {
     if (!username.trim()) {
-      toast.error("Enter a valid username!");
+      toast.error("Enter a valid username!", { position: "top-center" });
       inputRef.current.focus();
       return;
     }
@@ -250,57 +446,51 @@ const AddFriend = ({ setAddFriend, setFriends, friends }) => {
     try {
       const currentUser = auth.currentUser;
       if (!currentUser) {
-        toast.error("You must be logged in!");
+        toast.error("You must be logged in!", { position: "top-center" });
         return;
       }
-      if(currentUser.displayName === username){
-        toast.error("You cannot add yourself as a friend!");
+      if (currentUser.displayName === username) {
+        toast.error("You cannot add yourself as a friend!", { position: "top-center" });
         return;
       }
+  
       const usersRef = ref(db, "Users");
       const snapshot = await get(usersRef);
-  
       if (!snapshot.exists()) {
-        toast.error("No users found in the database!");
+        toast.error("No users found in the database!", { position: "top-center" });
         return;
       }
   
       const usersData = snapshot.val();
-      const userKeys = Object.keys(usersData);
-      const friendExists = userKeys.some((key) => usersData[key].username === username);
+      const friendEntry = Object.entries(usersData).find(
+        ([uid, userData]) => userData.username === username
+      );
   
-      if (!friendExists) {
-        toast.error("User does not exist in the database!");
+      if (!friendEntry) {
+        toast.error("User does not exist in the database!", { position: "top-center" });
         return;
       }
   
-      const userChatRef = ref(db, `Chats/${currentUser.uid}/friends`);
-      const friendsSnapshot = await get(userChatRef);
+      const friendUid = friendEntry[0];
   
-      if (friendsSnapshot.exists()) {
-        const existingFriends = Object.keys(friendsSnapshot.val());
+      const friendRequestsRef = ref(db, `Users/${friendUid}/friendRequests`);
+      const requestSnapshot = await get(friendRequestsRef);
   
-        if (existingFriends.includes(username)) {
-          toast.error("Friend is already in your list!");
-          return;
-        }
+      if (requestSnapshot.exists() && requestSnapshot.val()[currentUser.displayName]) {
+        toast.error("Friend request already sent!", { position: "top-center" });
+        return;
       }
   
-      // ✅ Friend is valid and not already added → Proceed with adding
-      update(userChatRef, { [username]: true })
-        .then(() => {
-          toast.success(`${username} added as a friend!`);
-          setFriends((prevFriends) => [...new Set([...prevFriends, username])]); // Ensure uniqueness
-          setUsername(""); // Clear input
-        })
-        .catch((error) => {
-          toast.error(`Error adding friend: ${error.message}`);
-        });
+      await update(friendRequestsRef, { [currentUser.displayName]: true });
   
+      toast.success(`Friend request sent to ${username}!`, { position: "top-center" });
+      setUsername("");
     } catch (error) {
-      toast.error(`Error: ${error.message}`);
+      console.error("Error sending friend request:", error);
+      toast.error(`Error: ${error.message}`, { position: "top-center" });
     }
   };
+  
 
   return (
     <div style={{
@@ -337,7 +527,6 @@ export default function Community() {
   const [addFriend, setAddFriend] = useState(false);
   const [friends, setFriends] = useState([]);
 
-  // ✅ Load friends on mount
   useEffect(() => {
     const currentUser = auth.currentUser;
     if (!currentUser) return;
@@ -354,7 +543,7 @@ export default function Community() {
     }).catch((error) => {
       console.error("Error fetching friends:", error);
     });
-  }, []); // Runs only once on mount
+  }, []);
 
   return (
     <Box sx={{
@@ -372,7 +561,7 @@ export default function Community() {
           indicatorColor="secondary" textColor="inherit"
           variant="fullWidth" sx={{ backgroundColor: "#1c2633" }}>
           <Tab label="Chats" sx={{ color: value === 0 ? "#4ade80" : "white" }} />
-          <Tab label="Community" sx={{ color: value === 1 ? "#facc15" : "white" }} />
+          <Tab label="Requests" sx={{ color: value === 1 ? "#facc15" : "white" }} />
         </Tabs>
       </AppBar>
 
@@ -388,7 +577,7 @@ export default function Community() {
       </TabPanel>
 
       <TabPanel value={value} index={1}>
-        Community
+        <Request setFriends={setFriends}/>
       </TabPanel>
 
       <Zoom in timeout={{ enter: theme.transitions.duration.enteringScreen, exit: theme.transitions.duration.leavingScreen }} unmountOnExit>

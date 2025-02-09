@@ -1,4 +1,3 @@
-/* SimpleBar Scrollbar */
 .custom-scrollbar .simplebar-scrollbar::before {
   background-color: #1a202c !important;
   border-radius: 8px;

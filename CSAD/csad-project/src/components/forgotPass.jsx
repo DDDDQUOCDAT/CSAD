@@ -10,7 +10,7 @@ const ForgotPass = () => {
 
     const handleReset = async (e) => {
         e.preventDefault();
-        const email = e.target.email.value; // FIXED input name
+        const email = e.target.email.value; 
         if (!email) {
             toast.error("Please enter a valid email", { position: "top-center" });
             return;
@@ -30,10 +30,10 @@ const ForgotPass = () => {
         <div id="body">
             <div className="form-container">
                 <p className="title">Forgot Password</p>
-                <form className="form" onSubmit={handleReset}>  {/* FIXED */}
+                <form className="form" onSubmit={handleReset}> 
                     <div className="input-group">
                         <label htmlFor="email">Email</label>
-                        <input type="text" name="email" id="email" placeholder="" required />  {/* FIXED input name */}
+                        <input type="text" name="email" id="email" placeholder="" required />
                         <button style={{ marginTop: "10px" }} className="sign" type="submit">
                             Reset Password
                         </button>

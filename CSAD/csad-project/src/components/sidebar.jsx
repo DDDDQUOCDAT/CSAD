@@ -2,12 +2,10 @@ import { Link, useLocation } from 'react-router-dom';
 import './sidebar.css'
 
 function Sidebar() {
-    const location = useLocation(); // ✅ Now inside a Router-wrapped component
+    const location = useLocation();
 
-    // ⬇️ List of pages where Sidebar should NOT be shown
     const hideSidebarRoutes = ["/login", "/signup", "/forgotpass"];
 
-    // If the current path is in hideSidebarRoutes, do not render Sidebar
     if (hideSidebarRoutes.includes(location.pathname)) {
       return null;
     }

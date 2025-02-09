@@ -93,12 +93,10 @@ const Rewards = () => {
 
       <main className="flex flex-col items-center w-full px-4">
         
-        {/* Daily Login Section */}
         <section className="w-full max-w-2xl text-center bg-gray-800 p-6 rounded-lg shadow-md ">
           <h2 className="text-2xl font-semibold">Daily Login Bonus</h2>
           <p>Check in every day to earn <strong>50 points</strong>!</p>
           
-          {/* Week Tracker */}
           <div className="flex justify-center gap-3 ">
             {daysOfWeek.map((day, index) => (
               <span
@@ -124,7 +122,6 @@ const Rewards = () => {
           <p className="text-lg mt-2">{loggedDays}/7 Achieved</p>
         </section>
 
-        {/* Achievements & Badges */}
         <section className="w-full max-w-2xl text-center bg-gray-800 p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold">Achievements & Badges</h2>
           <div className="flex justify-center gap-6 mt-4">
@@ -140,7 +137,6 @@ const Rewards = () => {
           </div>
         </section>
 
-        {/* Redeemable Rewards */}
         <section className="w-full max-w-3xl text-center bg-gray-800 p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold">Redeemable Rewards</h2>
           <div className="grid grid-cols-3 gap-4 mt-4">

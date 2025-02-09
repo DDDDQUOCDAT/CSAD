@@ -20,12 +20,11 @@ const events = [
   ];
 
   const EventPopup = ({ event, onClose }) => {
-	if (!event) return null; // Ensure there's an event before rendering
+	if (!event) return null; 
   
 	return (
 	  <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
 		<div className="bg-[#16212d] rounded-lg shadow-lg max-w-md w-full p-6 relative">
-		  {/* Close Button */}
 		  <button 
 			className="absolute top-3 right-3 text-white hover:text-gray-800"
 			onClick={onClose}
@@ -33,24 +32,20 @@ const events = [
 			✖
 		  </button>
   
-		  {/* Event Image */}
 		  <img 
 			src={event.image} 
 			alt={event.title} 
 			className="w-full h-full object-cover rounded-lg"
 		  />
   
-		  {/* Event Title */}
 		  <h2 className="text-2xl font-bold text-white mt-4">
 			{event.title}
 		  </h2>
   
-		  {/* Event Description */}
 		  <p style={{color: "white"}} className="mt-2">
 			{event.description}
 		  </p>
   
-		  {/* Sign Up Button */}
 		  <button 
 			className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
 			onClick={() => toast.success(`Signed up for ${event.title}!`, { position: "top-center" })}

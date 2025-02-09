@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import "./insights.scss"; // Ensure this file exists for styles
+import "./insights.scss";
 
 const Insights = () => {
-  // State to manage selected muscle groups
   const [selectedMuscles, setSelectedMuscles] = useState({});
 
   const muscleExercises = {
@@ -22,17 +21,16 @@ const Insights = () => {
     quads: ["Leg Press", "Front Squats", "Bulgarian Split Squats"]
   };
 
-  // Handle checkbox selection
   const handleCheckboxChange = (event) => {
     const { id, checked } = event.target;
     setSelectedMuscles((prev) => ({
       ...prev,
-      [id]: checked, // Update state dynamically
+      [id]: checked, 
     }));
   };
 
   const recommendedExercises = Object.keys(selectedMuscles)
-    .filter((muscle) => selectedMuscles[muscle]) // Get selected muscles
+    .filter((muscle) => selectedMuscles[muscle]) 
     .flatMap((muscle) => muscleExercises[muscle] || []); 
 
   return (

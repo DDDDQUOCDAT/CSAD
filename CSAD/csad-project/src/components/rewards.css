@@ -1,8 +1,7 @@
-/* General Styles */
 .rewards-container {
   display: flex;
   flex-direction: column;
-  min-height: 100%; /* Ensures full page height */
+  min-height: 100%; 
 }
 body {
   font-family: 'Poppins', sans-serif;
@@ -23,17 +22,17 @@ header {
 header h1 {
   margin: 0;
   
-    font-size: 3rem; /* Large and eye-catching */
-    font-weight: bold; /* Make it stand out */
-    text-align: center; /* Center the title */
-    color: #ffffff; /* White text */
+    font-size: 3rem; 
+    font-weight: bold; 
+    text-align: center; 
+    color: #ffffff; 
     background: linear-gradient(45deg, #6C5B7B, #C06C84, #F67280);
-    padding: 15px 30px; /* Add space inside the title */
-    border-radius: 10px; /* Smooth rounded corners */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-    display: inline-block; /* Wrap text neatly */
-    text-transform: uppercase; /* Make it bold and strong */
-    letter-spacing: 2px; /* Space out the letters */
+    padding: 15px 30px; 
+    border-radius: 10px; 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+    display: inline-block; 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
 
 }
 
@@ -60,11 +59,10 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Ensures last section is at bottom */
+  justify-content: space-between; 
   align-items: center;
 }
 
-/* Progress Tracking Section */
 .progress-tracking {
   background-color: #fff;
   padding: 1rem;
@@ -74,9 +72,9 @@ main {
 
 .milestones {
   display: flex;
-  justify-content: space-between; /* Pushes items apart */
-  align-items: center; /* Aligns items vertically */
-  gap: 20px; /* Adds spacing between sections */
+  justify-content: space-between; 
+  align-items: center; 
+  gap: 20px; 
  } 
 
  .milestone-card {
@@ -84,7 +82,7 @@ main {
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%; /* Ensures all cards have the same width */
+  width: 100%; 
 }
 
 .progress-bar {
@@ -100,7 +98,6 @@ main {
   border-radius: 10px;
 }
 
-/* Achievements & Badges Section */
 .achievements {
 padding: 4rem 2rem;
 background-color: #f9f9f9;
@@ -130,7 +127,7 @@ margin: 0 auto;
   width: 150px;
   height: 150px;
   display: flex;
-  flex-direction: column; /* Stack icon on top of text */
+  flex-direction: column; 
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -163,7 +160,6 @@ color: #555;
 margin: 0;
 }
 
-/* Floating Animation */
 @keyframes float {
 0%, 100% {
   transform: translateY(0);
@@ -174,7 +170,6 @@ margin: 0;
 }
 
 
-/* Points System Section */
 .points-system {
   background-color: #fff;
   padding: 1rem;
@@ -191,21 +186,20 @@ margin: 0;
 }
 
 
-/* Redeemable Rewards Section */
 .redeemable-rewards {
-  padding-bottom: 20px; /* Space from bottom */
+  padding-bottom: 20px; 
   text-align: center;
 }
 
 .rewards-grid {
   display: flex;
-  justify-content: center; /* Centers rewards */
-  gap: 20px; /* Space between rewards */
+  justify-content: center; 
+  gap: 20px; 
 }
 
 .reward-card {
   flex: 1;
-  max-width: 250px; /* Limit width */
+  max-width: 250px;
   background-color: #1c2633;
   color: white;
   padding: 1rem;
@@ -232,7 +226,6 @@ margin: 0;
 }
 
 
-/* Animations */
 @keyframes fadeIn {
 from {
   opacity: 0;
@@ -256,28 +249,27 @@ p{
 }
 
 .moving-image {
-  width: 100px; /* Adjust based on your image size */
+  width: 100px; 
   height: auto;
   position: absolute;
   bottom: 0;
-  left: -100px; /* Start off-screen */
+  left: -100px; 
   animation: move 5s linear infinite;
 }
 
-  /* Movement Animation */
   @keyframes move {
     0% {
-      left: -100px; /* Start off-screen */
+      left: -100px; 
     }
     100% {
-      left: 100%; /* Move to the right edge of the screen */
+      left: 100%; 
     }
   }
 
 
 
   .daily-goals {
-      flex: 1; /* Takes more space on the left */
+      flex: 1; 
   }
   
   .daily-goals h2 {
@@ -320,7 +312,6 @@ p{
       transition: background 0.3s ease;
   }
   
-  /* When the user logs activity, add this class dynamically */
   .day-circle.filled {
       background: #6c63ff;
       color: white;
@@ -328,14 +319,13 @@ p{
 
   .milestone-container {
     display: flex;
-    flex-direction: column; /* Stacks milestone cards */
-    gap: 15px; /* Space between cards */
-    flex: 0.5; /* Takes less space */
+    flex-direction: column; 
+    gap: 15px;
+    flex: 0.5;
 }
   
 
 
-/* Daily Login Section */
 .daily-login {
   text-align: center;
 }
@@ -369,7 +359,6 @@ p{
   font-weight: bold;
 }
 
-/* Total Points Display */
 .total-points {
   text-align: center;
 }
@@ -379,7 +368,6 @@ p{
   color: #333333;
 }
 
-/* Progress Tracking Section */
 .progress-tracking {
   text-align: center;
 }
@@ -401,4 +389,37 @@ p{
   font-size: 18px;
   font-weight: bold;
   color: #4CAF50;
+}
+.signin {
+  float: right;
+  max-width: 320px;
+  display: flex;
+  padding: 0.5rem 1.4rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  vertical-align: middle;
+  align-items: center;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  gap: 0.75rem;
+  color: #c4d2dc;
+  background-color: #19242b;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0, 0.87, 0.12, 1);
+}
+
+.signin:hover {
+  transform: scale(1.025);
+}
+
+.signin:active {
+  transform: scale(0.975);
+}
+
+button svg {
+  height: 24px;
+  width: auto;
 }
