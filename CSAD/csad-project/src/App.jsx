@@ -43,7 +43,7 @@ function App() {
     <Router>
       <div className="flex">
         {user && <Sidebar />}
-        <div className="flex-1 p-4">
+        <div className="flex-1 h-[100vh]">
           <Routes>
             <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
 

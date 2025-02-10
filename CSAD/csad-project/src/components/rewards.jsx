@@ -86,7 +86,7 @@ const Rewards = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+    <div className="flex flex-col h-[100%] bg-gray-900 text-white overflow-auto">
       <header className="text-center py-6 bg-gray-800 shadow-lg">
         <h1 className="text-4xl font-bold">Rewards!</h1>
       </header>

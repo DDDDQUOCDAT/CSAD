@@ -23,7 +23,7 @@ const events = [
 	if (!event) return null; 
   
 	return (
-	  <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
+	  <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50 h-[100%]">
 		<div className="bg-[#16212d] rounded-lg shadow-lg max-w-md w-full p-6 relative">
 		  <button 
 			className="absolute top-3 right-3 text-white hover:text-gray-800"
@@ -64,7 +64,7 @@ const events = [
 	};
 
   return (
-    <StyledWrapper>
+    <StyledWrapper className="h-[100%] overflow-auto">
     <p style={{textAlign: "center", color: "white", fontSize: "2rem"}}>Pick an event to join!</p>
       <div className="wrapper">
         <div className="inner" style={{ "--quantity": events.length }}>
@@ -103,8 +103,8 @@ const StyledWrapper = styled.div`
   .inner {
     --w: 200px;
     --h: 200px;
-    --translateZ: calc((var(--w) + var(--h)) * 1.3);
-    --rotateX: -5deg;
+    --translateZ: calc((var(--w) + var(--h)) * 1.15);
+    --rotateX: 0deg;
     --perspective: 1200px;
     position: absolute;
     width: var(--w);

@@ -149,7 +149,7 @@ const workoutChart = {
   };
 
   return (
-    <div className="p-6 bg-[#1c2633] text-white h-[100%]">
+    <div className="p-6 bg-[#1c2633] text-white h-[100%] overflow-auto">
     
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-[#cad4df]">
